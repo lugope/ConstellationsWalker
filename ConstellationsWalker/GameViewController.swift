@@ -28,7 +28,7 @@ class GameViewController: UIViewController {
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
         lightNode.light!.type = .omni
-        lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
+        lightNode.position = SCNVector3(x: 0, y: 10, z: 0)
         scene.rootNode.addChildNode(lightNode)
         
         // create and add an ambient light to the scene
@@ -40,12 +40,22 @@ class GameViewController: UIViewController {
         
         //Create a Sphere
         let sphereNode = SCNNode()
-        sphereNode.geometry = SCNSphere(radius: 1)
-        sphereNode.position = SCNVector3.init(x: 0, y: 2, z: 0)
+        sphereNode.geometry = SCNSphere(radius: 0.3)
+        sphereNode.position = SCNVector3.init(x: 0, y: 1, z: -4)
         let redMaterial = SCNMaterial()
         redMaterial.diffuse.contents = UIColor.red
         sphereNode.geometry?.materials = [redMaterial]
         scene.rootNode.addChildNode(sphereNode)
+        
+        //Create sky sphere
+        let skyNode = SCNNode()
+        skyNode.geometry = SCNSphere(radius: 10)
+        let purpleMaterial = SCNMaterial()
+        purpleMaterial.diffuse.contents = UIColor.purple
+        purpleMaterial.isDoubleSided = true
+        skyNode.geometry?.materials = [purpleMaterial]
+        scene.rootNode.addChildNode(skyNode)
+        
         
         //Create Plane
         let planeNode = SCNNode(geometry: SCNPlane(width: 10, height: 10))
@@ -59,7 +69,7 @@ class GameViewController: UIViewController {
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
         scene.rootNode.addChildNode(cameraNode)
-        cameraNode.position = SCNVector3(x: 3, y: 3, z: 15)
+        cameraNode.position = SCNVector3(x:0 , y: 1, z: 0)
         // allows the user to manipulate the camera
         scnView.allowsCameraControl = true
         scnView.defaultCameraController.interactionMode = .fly
