@@ -13,14 +13,16 @@ class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         // create a new scene
         let scene = SCNScene()
-        
-        // create and add a camera to the scene
-        let cameraNode = SCNNode()
-        cameraNode.camera = SCNCamera()
-        scene.rootNode.addChildNode(cameraNode)
+        // retrieve the SCNView
+        let scnView = self.view as! SCNView
+        // set the scene to the view
+        scnView.scene = scene
+        // show statistics such as fps and timing information
+        scnView.showsStatistics = true
+        // configure the view
+        scnView.backgroundColor = UIColor.black
         
         // create and add a light to the scene
         let lightNode = SCNNode()
@@ -53,22 +55,16 @@ class GameViewController: UIViewController {
         planeNode.geometry?.materials = [tealMaterial]
         scene.rootNode.addChildNode(planeNode)
         
-        //Place the camera
+        // Create and add a camera to the scene
+        let cameraNode = SCNNode()
+        cameraNode.camera = SCNCamera()
+        scene.rootNode.addChildNode(cameraNode)
         cameraNode.position = SCNVector3(x: 3, y: 3, z: 15)
-//        let constraint = SCNLookAtConstraint(target: sphereNode)
-//        constraint.isGimbalLockEnabled = true
-//        cameraNode.constraints = [constraint]
-        
-        // retrieve the SCNView
-        let scnView = self.view as! SCNView
-        // set the scene to the view
-        scnView.scene = scene
         // allows the user to manipulate the camera
         scnView.allowsCameraControl = true
-        // show statistics such as fps and timing information
-        scnView.showsStatistics = true
-        // configure the view
-        scnView.backgroundColor = UIColor.black
+        scnView.defaultCameraController.interactionMode = .fly
+        scnView.defaultCameraController.inertiaEnabled = false
+        
         
         // add a tap gesture recognizer
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
