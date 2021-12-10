@@ -22,9 +22,6 @@ class GameViewController: UIViewController {
         cameraNode.camera = SCNCamera()
         scene.rootNode.addChildNode(cameraNode)
         
-        // place the camera
-        cameraNode.position = SCNVector3(x: 0, y: 0, z: 15)
-        
         // create and add a light to the scene
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
@@ -39,24 +36,37 @@ class GameViewController: UIViewController {
         ambientLightNode.light!.color = UIColor.darkGray
         scene.rootNode.addChildNode(ambientLightNode)
         
-        //Create a new sphere
+        //Create a Sphere
         let sphereNode = SCNNode()
-        sphereNode.geometry = SCNSphere(radius: 2)
-        sphereNode.position = SCNVector3.init(x: 0, y: 0, z: 0)
+        sphereNode.geometry = SCNSphere(radius: 1)
+        sphereNode.position = SCNVector3.init(x: 0, y: 2, z: 0)
+        let redMaterial = SCNMaterial()
+        redMaterial.diffuse.contents = UIColor.red
+        sphereNode.geometry?.materials = [redMaterial]
         scene.rootNode.addChildNode(sphereNode)
+        
+        //Create Plane
+        let planeNode = SCNNode(geometry: SCNPlane(width: 10, height: 10))
+        planeNode.eulerAngles = SCNVector3(x: GLKMathDegreesToRadians(-90), y: 0, z: 0)
+        let tealMaterial = SCNMaterial()
+        tealMaterial.diffuse.contents = UIColor.systemTeal
+        planeNode.geometry?.materials = [tealMaterial]
+        scene.rootNode.addChildNode(planeNode)
+        
+        //Place the camera
+        cameraNode.position = SCNVector3(x: 3, y: 3, z: 15)
+//        let constraint = SCNLookAtConstraint(target: sphereNode)
+//        constraint.isGimbalLockEnabled = true
+//        cameraNode.constraints = [constraint]
         
         // retrieve the SCNView
         let scnView = self.view as! SCNView
-        
         // set the scene to the view
         scnView.scene = scene
-        
         // allows the user to manipulate the camera
         scnView.allowsCameraControl = true
-        
         // show statistics such as fps and timing information
         scnView.showsStatistics = true
-        
         // configure the view
         scnView.backgroundColor = UIColor.black
         
