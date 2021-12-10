@@ -35,7 +35,7 @@ class GameViewController: UIViewController {
         let ambientLightNode = SCNNode()
         ambientLightNode.light = SCNLight()
         ambientLightNode.light!.type = .ambient
-        ambientLightNode.light!.color = UIColor.darkGray
+        ambientLightNode.light!.color = UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
         scene.rootNode.addChildNode(ambientLightNode)
         
         //Create a Sphere
@@ -50,15 +50,14 @@ class GameViewController: UIViewController {
         //Create sky sphere
         let skyNode = SCNNode()
         skyNode.geometry = SCNSphere(radius: 10)
-        let purpleMaterial = SCNMaterial()
-        purpleMaterial.diffuse.contents = UIColor.purple
-        purpleMaterial.isDoubleSided = true
-        skyNode.geometry?.materials = [purpleMaterial]
+        let starMapMaterial = SCNMaterial()
+        starMapMaterial.diffuse.contents = UIImage(named: "starmap_8k.jpg")
+        starMapMaterial.isDoubleSided = true
+        skyNode.geometry?.materials = [starMapMaterial]
         scene.rootNode.addChildNode(skyNode)
         
-        
         //Create Plane
-        let planeNode = SCNNode(geometry: SCNPlane(width: 10, height: 10))
+        let planeNode = SCNNode(geometry: SCNPlane(width: 40, height: 40))
         planeNode.eulerAngles = SCNVector3(x: GLKMathDegreesToRadians(-90), y: 0, z: 0)
         let tealMaterial = SCNMaterial()
         tealMaterial.diffuse.contents = UIColor.systemTeal
@@ -69,7 +68,7 @@ class GameViewController: UIViewController {
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
         scene.rootNode.addChildNode(cameraNode)
-        cameraNode.position = SCNVector3(x:0 , y: 1, z: 0)
+        cameraNode.position = SCNVector3(x:0 , y: 2, z: 0)
         // allows the user to manipulate the camera
         scnView.allowsCameraControl = true
         scnView.defaultCameraController.interactionMode = .fly
