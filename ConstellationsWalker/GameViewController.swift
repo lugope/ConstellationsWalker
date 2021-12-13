@@ -36,6 +36,7 @@ class GameViewController: UIViewController {
         ambientLightNode.light = SCNLight()
         ambientLightNode.light!.type = .ambient
         ambientLightNode.light!.color = UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
+//        ambientLightNode.light!.color = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
         scene.rootNode.addChildNode(ambientLightNode)
         
         //Create a Sphere
@@ -61,6 +62,16 @@ class GameViewController: UIViewController {
         
         skyNode.geometry?.materials = [starMapMaterial]
         scene.rootNode.addChildNode(skyNode)
+        
+        //Create Equator Line
+        let equatorLine = SCNNode()
+        equatorLine.geometry = SCNTube(innerRadius: 9.8, outerRadius: 9.9, height: 0.05)
+        equatorLine.eulerAngles = SCNVector3(x: GLKMathDegreesToRadians(20), y: 0, z: GLKMathDegreesToRadians(20))
+        let equatorLineMaterial = SCNMaterial()
+        equatorLineMaterial.diffuse.contents = UIColor.yellow
+        equatorLineMaterial.isDoubleSided = true
+        equatorLine.geometry?.firstMaterial = equatorLineMaterial
+        scene.rootNode.addChildNode(equatorLine)
         
         //Create Plane
         let planeNode = SCNNode(geometry: SCNPlane(width: 40, height: 40))
