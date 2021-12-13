@@ -50,9 +50,15 @@ class GameViewController: UIViewController {
         //Create sky sphere
         let skyNode = SCNNode()
         skyNode.geometry = SCNSphere(radius: 10)
+        
         let starMapMaterial = SCNMaterial()
         starMapMaterial.diffuse.contents = UIImage(named: "starmap_8k.jpg")
         starMapMaterial.isDoubleSided = true
+        
+//        let constellationsMaterial = SCNMaterial()
+//        constellationsMaterial.diffuse.contents = UIImage(named: "starmapAndConstellations_8k.jpg")
+//        constellationsMaterial.isDoubleSided = true
+        
         skyNode.geometry?.materials = [starMapMaterial]
         scene.rootNode.addChildNode(skyNode)
         
@@ -72,8 +78,9 @@ class GameViewController: UIViewController {
         // allows the user to manipulate the camera
         scnView.allowsCameraControl = true
         scnView.defaultCameraController.interactionMode = .fly
-        scnView.defaultCameraController.inertiaEnabled = false
-        
+        scnView.defaultCameraController.inertiaEnabled = true
+        scnView.defaultCameraController.maximumVerticalAngle = 89
+        scnView.defaultCameraController.minimumVerticalAngle = -89
         
         // add a tap gesture recognizer
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
