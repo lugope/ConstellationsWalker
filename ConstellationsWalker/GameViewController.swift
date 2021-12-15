@@ -9,6 +9,8 @@ import UIKit
 import QuartzCore
 import SceneKit
 
+let SKY_RADIUS: Float = 10.0
+
 class GameViewController: UIViewController {
 
     override func viewDidLoad() {
@@ -41,8 +43,8 @@ class GameViewController: UIViewController {
         
         //Create a Sphere
         let sphereNode = SCNNode()
-        sphereNode.geometry = SCNSphere(radius: 0.3)
-        sphereNode.position = SCNVector3.init(x: 0, y: 1, z: -4)
+        sphereNode.geometry = SCNSphere(radius: 0.1)
+        sphereNode.position = SCNVector3.init(x: 0, y: 0, z: -10)
         let redMaterial = SCNMaterial()
         redMaterial.diffuse.contents = UIColor.red
         sphereNode.geometry?.materials = [redMaterial]
@@ -50,36 +52,53 @@ class GameViewController: UIViewController {
         
         //Create sky sphere
         let skyNode = SCNNode()
-        skyNode.geometry = SCNSphere(radius: 10)
+        skyNode.geometry = SCNSphere(radius: CGFloat(SKY_RADIUS))
+        skyNode.eulerAngles = SCNVector3(x: 0, y: GLKMathDegreesToRadians(180), z: 0)
         
         let starMapMaterial = SCNMaterial()
         starMapMaterial.diffuse.contents = UIImage(named: "starmap_8k.jpg")
         starMapMaterial.isDoubleSided = true
+        skyNode.geometry?.materials = [starMapMaterial]
         
 //        let constellationsMaterial = SCNMaterial()
 //        constellationsMaterial.diffuse.contents = UIImage(named: "starmapAndConstellations_8k.jpg")
 //        constellationsMaterial.isDoubleSided = true
-        
-        skyNode.geometry?.materials = [starMapMaterial]
+//        skyNode.geometry?.materials = [constellationsMaterial]
         scene.rootNode.addChildNode(skyNode)
         
         //Create Equator Line
-        let equatorLine = SCNNode()
-        equatorLine.geometry = SCNTube(innerRadius: 9.8, outerRadius: 9.9, height: 0.05)
-        equatorLine.eulerAngles = SCNVector3(x: GLKMathDegreesToRadians(20), y: 0, z: GLKMathDegreesToRadians(20))
         let equatorLineMaterial = SCNMaterial()
         equatorLineMaterial.diffuse.contents = UIColor.yellow
         equatorLineMaterial.isDoubleSided = true
+        let equatorLine2 = SCNNode()
+        equatorLine2.geometry = SCNTube(innerRadius: 9.8, outerRadius: 9.9, height: 0.01)
+        equatorLine2.geometry?.firstMaterial = equatorLineMaterial
+        scene.rootNode.addChildNode(equatorLine2)
+        
+        //Create Y axis Line 2
+        let equatorLine = SCNNode()
+        equatorLine.geometry = SCNTube(innerRadius: 9.8, outerRadius: 9.9, height: 0.01)
+        equatorLine.eulerAngles = SCNVector3(x: 0, y: 0, z: GLKMathDegreesToRadians(90))
         equatorLine.geometry?.firstMaterial = equatorLineMaterial
         scene.rootNode.addChildNode(equatorLine)
         
+        //Create X axis Line 3
+        let equatorLine3 = SCNNode()
+        equatorLine3.geometry = SCNTube(innerRadius: 8, outerRadius: 9.9, height: 0.01)
+        equatorLine3.eulerAngles = SCNVector3(x: GLKMathDegreesToRadians(90), y: GLKMathDegreesToRadians(0), z: 0)
+        equatorLine3.geometry?.firstMaterial = equatorLineMaterial
+        scene.rootNode.addChildNode(equatorLine3)
+        
         //Create Plane
-        let planeNode = SCNNode(geometry: SCNPlane(width: 40, height: 40))
-        planeNode.eulerAngles = SCNVector3(x: GLKMathDegreesToRadians(-90), y: 0, z: 0)
-        let tealMaterial = SCNMaterial()
-        tealMaterial.diffuse.contents = UIColor.systemTeal
-        planeNode.geometry?.materials = [tealMaterial]
-        scene.rootNode.addChildNode(planeNode)
+//        let planeNode = SCNNode(geometry: SCNPlane(width: 40, height: 40))
+//        planeNode.eulerAngles = SCNVector3(x: GLKMathDegreesToRadians(-90), y: 0, z: 0)
+//        let tealMaterial = SCNMaterial()
+//        tealMaterial.diffuse.contents = UIColor.systemTeal
+//        planeNode.geometry?.materials = [tealMaterial]
+//        scene.rootNode.addChildNode(planeNode)
+        
+        // Add Taurus Constellation
+        addTaurusConstelation()
         
         // Create and add a camera to the scene
         let cameraNode = SCNNode()
@@ -96,6 +115,36 @@ class GameViewController: UIViewController {
         // add a tap gesture recognizer
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         scnView.addGestureRecognizer(tapGesture)
+    }
+    
+    func addTaurusConstelation() {
+        // retrieve the SCNView
+        let scnView = self.view as! SCNView
+        let stars: [(ra: Float, dec: Float)] = [
+            // Ain (Epsilon Tauri)
+            (60.3000,42.3000),
+            // Hyadum II (Delta Tauri)
+            (60.300,37.070),
+            // Hyadum I (Gamma Tauri)
+            (60.3000,33.700),
+            // Theta Taurus (Theta Taurus)
+            (62.1000,36.2500),
+            // Aldebaran (Alpha Tauri)
+            (63.3000,39.9000)
+        ]
+        
+        let yellowMaterial = SCNMaterial()
+        yellowMaterial.diffuse.contents = UIColor.yellow
+        
+        if let scene = scnView.scene {
+            for star in stars {
+                let starNode = SCNNode()
+                starNode.geometry = SCNSphere(radius: 0.1)
+                starNode.geometry?.materials = [yellowMaterial]
+                starNode.position = CelestialToCartesian(radius: SKY_RADIUS, ra: star.ra, dec: star.dec)
+                scene.rootNode.addChildNode(starNode)
+            }
+        }
     }
     
     @objc
