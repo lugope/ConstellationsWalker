@@ -118,19 +118,18 @@ class GameViewController: UIViewController {
     }
     
     func addTaurusConstelation() {
-        // retrieve the SCNView
         let scnView = self.view as! SCNView
         let stars: [(ra: Float, dec: Float)] = [
             // Ain (Epsilon Tauri)
-            (60.3000,42.3000),
+            (67.1542,19.1803),
             // Hyadum II (Delta Tauri)
-            (60.300,37.070),
+            (65.7333,17.5425),
             // Hyadum I (Gamma Tauri)
-            (60.3000,33.700),
+            (64.9458,15.6275),
             // Theta Taurus (Theta Taurus)
-            (62.1000,36.2500),
+            (67.1625,15.8708),
             // Aldebaran (Alpha Tauri)
-            (63.3000,39.9000)
+            (68.9792,16.5092)
         ]
         
         let yellowMaterial = SCNMaterial()
