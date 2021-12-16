@@ -19,10 +19,11 @@ class GameViewController: UIViewController {
         let scene = SCNScene()
         // retrieve the SCNView
         let scnView = self.view as! SCNView
+        scnView.delegate = self
         // set the scene to the view
         scnView.scene = scene
         // show statistics such as fps and timing information
-        scnView.showsStatistics = true
+        scnView.showsStatistics = false
         // configure the view
         scnView.backgroundColor = UIColor.black
         
@@ -37,8 +38,8 @@ class GameViewController: UIViewController {
         let ambientLightNode = SCNNode()
         ambientLightNode.light = SCNLight()
         ambientLightNode.light!.type = .ambient
-        ambientLightNode.light!.color = UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
-        //        ambientLightNode.light!.color = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+//        ambientLightNode.light!.color = UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
+        ambientLightNode.light!.color = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
         scene.rootNode.addChildNode(ambientLightNode)
         
         //Create a Sphere
@@ -48,7 +49,7 @@ class GameViewController: UIViewController {
         let redMaterial = SCNMaterial()
         redMaterial.diffuse.contents = UIColor.red
         sphereNode.geometry?.materials = [redMaterial]
-        scene.rootNode.addChildNode(sphereNode)
+//        scene.rootNode.addChildNode(sphereNode)
         
         //Create sky sphere
         let skyNode = SCNNode()
@@ -56,7 +57,7 @@ class GameViewController: UIViewController {
         skyNode.eulerAngles = SCNVector3(x: 0, y: GLKMathDegreesToRadians(180), z: 0)
         
         let starMapMaterial = SCNMaterial()
-        starMapMaterial.diffuse.contents = UIImage(named: "starmap_8k.jpg")
+        starMapMaterial.diffuse.contents = UIImage(named: "starmapArt_8k.jpg")
         starMapMaterial.isDoubleSided = true
         skyNode.geometry?.materials = [starMapMaterial]
         
@@ -73,21 +74,21 @@ class GameViewController: UIViewController {
         let equatorLine2 = SCNNode()
         equatorLine2.geometry = SCNTube(innerRadius: 9.8, outerRadius: 9.9, height: 0.01)
         equatorLine2.geometry?.firstMaterial = equatorLineMaterial
-        scene.rootNode.addChildNode(equatorLine2)
+//        scene.rootNode.addChildNode(equatorLine2)
         
         //Create Y axis Line 2
         let equatorLine = SCNNode()
         equatorLine.geometry = SCNTube(innerRadius: 9.8, outerRadius: 9.9, height: 0.01)
         equatorLine.eulerAngles = SCNVector3(x: 0, y: 0, z: GLKMathDegreesToRadians(90))
         equatorLine.geometry?.firstMaterial = equatorLineMaterial
-        scene.rootNode.addChildNode(equatorLine)
+//        scene.rootNode.addChildNode(equatorLine)
         
         //Create X axis Line 3
         let equatorLine3 = SCNNode()
         equatorLine3.geometry = SCNTube(innerRadius: 8, outerRadius: 9.9, height: 0.01)
         equatorLine3.eulerAngles = SCNVector3(x: GLKMathDegreesToRadians(90), y: GLKMathDegreesToRadians(0), z: 0)
         equatorLine3.geometry?.firstMaterial = equatorLineMaterial
-        scene.rootNode.addChildNode(equatorLine3)
+//        scene.rootNode.addChildNode(equatorLine3)
         
         //Create Plane
         //        let planeNode = SCNNode(geometry: SCNPlane(width: 40, height: 40))
@@ -222,6 +223,8 @@ class GameViewController: UIViewController {
         }
     }
     
+    
+    
     override var shouldAutorotate: Bool {
         return true
     }
@@ -238,4 +241,10 @@ class GameViewController: UIViewController {
         }
     }
     
+}
+
+extension GameViewController: SCNSceneRendererDelegate {
+    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        
+    }
 }

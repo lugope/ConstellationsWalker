@@ -51,7 +51,7 @@ struct Star {
         self.lineTo = lineTo
         
         node = SCNNode()
-        node.geometry = SCNSphere(radius: 0.05)
+        node.geometry = SCNSphere(radius: 0.03)
         node.geometry?.firstMaterial?.diffuse.contents = UIColor.yellow
         node.position = CelestialToCartesian(radius: SKY_RADIUS-0.1, ra: ra, dec: dec)
     }
