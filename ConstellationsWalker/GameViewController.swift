@@ -119,30 +119,45 @@ class GameViewController: UIViewController {
     
     func addTaurusConstelation() {
         let scnView = self.view as! SCNView
-        let stars: [(ra: Float, dec: Float)] = [
-            // Ain (Epsilon Tauri)
-            (67.1542,19.1803),
-            // Hyadum II (Delta Tauri)
-            (65.7333,17.5425),
-            // Hyadum I (Gamma Tauri)
-            (64.9458,15.6275),
-            // Theta Taurus (Theta Taurus)
-            (67.1625,15.8708),
-            // Aldebaran (Alpha Tauri)
-            (68.9792,16.5092)
+        let stars2: [Star] = [
+            Star(name: "Ain (Epsilon Tauri)", id: .epsilon, ra: 67.1542, dec: 19.1803, lineTo: nil),
+            Star(name: "Hyadum II (Delta Tauri)", id: .delta, ra: 65.7333, dec: 17.5425, lineTo: .gamma),
+            Star(name: "Hyadum I (Gamma Tauri)", id: .gamma, ra: 64.9458, dec: 15.6275, lineTo: .lambda),
+            Star(name: "Theta Taurus (Theta Taurus)", id: .theta, ra: 67.1625, dec: 15.8708, lineTo: .gamma),
+            Star(name: "Aldebaran (Alpha Tauri)", id: .alpha, ra: 68.9792, dec: 16.5092, lineTo: .theta),
+            Star(name: "Zeta Taurus", id: .zeta, ra: 84.4083, dec: 21.1425, lineTo: .alpha),
+            Star(name: "Nath (Beta Tauri)", id: .beta, ra: 81.5708, dec: 28.6072, lineTo: .delta),
+            Star(name: "Lambda Taurus", id: .lambda, ra: 60.1667, dec: 12.4903, lineTo: .xi),
+            Star(name: "Xi Taurus", id: .xi, ra: 51.7917, dec: 9.7325, lineTo: nil),
+            Star(name: "Alcyone (Eta Tauri)", id: .eta, ra: 56.8708, dec: 24.1050, lineTo: .delta)
         ]
         
         let yellowMaterial = SCNMaterial()
         yellowMaterial.diffuse.contents = UIColor.yellow
         
         if let scene = scnView.scene {
-            for star in stars {
-                let starNode = SCNNode()
-                starNode.geometry = SCNSphere(radius: 0.1)
-                starNode.geometry?.materials = [yellowMaterial]
-                starNode.position = CelestialToCartesian(radius: SKY_RADIUS, ra: star.ra, dec: star.dec)
-                scene.rootNode.addChildNode(starNode)
+            for star in stars2 {
+                scene.rootNode.addChildNode(star.node)
             }
+            
+            //Draw Line
+//            let positionA = CelestialToCartesian(radius: SKY_RADIUS-0.1, ra: 68.9792, dec: 16.5092)
+//            let positionB = CelestialToCartesian(radius: SKY_RADIUS-0.1, ra: 84.4083, dec: 21.1425)
+//
+//            let vector = SCNVector3(positionA.x - positionB.x, positionA.y - positionB.y, positionA.z - positionB.z)
+//            let distance = sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)
+//            let midPosition = SCNVector3 (x:(positionA.x + positionB.x) / 2, y:(positionA.y + positionB.y) / 2, z:(positionA.z + positionB.z) / 2)
+//
+//            let lineGeometry = SCNCylinder()
+//            lineGeometry.radius = 0.03
+//            lineGeometry.height = CGFloat(distance)
+//            lineGeometry.radialSegmentCount = 5
+//            lineGeometry.firstMaterial!.diffuse.contents = UIColor.white
+//
+//            let lineNode = SCNNode(geometry: lineGeometry)
+//            lineNode.position = midPosition
+//            lineNode.look (at: positionB, up: scene.rootNode.worldUp, localFront: lineNode.worldUp)
+//            scene.rootNode.addChildNode(lineNode)
         }
     }
     
