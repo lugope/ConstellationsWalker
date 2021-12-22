@@ -12,6 +12,8 @@ import SceneKit
 let SKY_RADIUS: Float = 10.0
 
 class GameViewController: UIViewController {
+    var constellations: [Constellation] = []
+    var label = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +28,23 @@ class GameViewController: UIViewController {
         scnView.showsStatistics = false
         // configure the view
         scnView.backgroundColor = UIColor.black
+        
+        //Load constellations
+        constellations.append(
+            Constellation(name: "Taurus", stars: STARS, currentView: scnView)
+        )
+        
+        // UI
+        label = UILabel(frame: CGRect(x: (scnView.frame.width/2)-75, y: 750, width: 150, height: 50))
+        label.layer.masksToBounds = true
+        label.layer.cornerRadius = 16
+        label.textAlignment = .center
+        label.textColor = UIColor.white
+        label.text = "Aldebaran"
+        label.font = UIFont.boldSystemFont(ofSize: 24)
+        label.backgroundColor = UIColor(red: 0, green: 198/255, blue: 243/255, alpha: 0.8)
+        scnView.addSubview(label)
+        
         
         // create and add a light to the scene
         let lightNode = SCNNode()
@@ -99,13 +118,13 @@ class GameViewController: UIViewController {
         //        scene.rootNode.addChildNode(planeNode)
         
         // Add Taurus Constellation
-        addTaurusConstelation()
+        addConstellations()
         
         // Create and add a camera to the scene
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
         scene.rootNode.addChildNode(cameraNode)
-        cameraNode.position = SCNVector3(x:0 , y: 2, z: 0)
+        cameraNode.position = SCNVector3(x:0 , y: 1, z: 0)
         // allows the user to manipulate the camera
         scnView.allowsCameraControl = true
         scnView.defaultCameraController.interactionMode = .fly
@@ -118,74 +137,21 @@ class GameViewController: UIViewController {
         scnView.addGestureRecognizer(tapGesture)
     }
     
-    func addTaurusConstelation() {
+    func addConstellations() {
         let scnView = self.view as! SCNView
-        let stars: [Star] = [
-            Star(name: "Ain (Epsilon Tauri)", id: .epsilon, ra: 67.1542, dec: 19.1803, lineTo: .delta),
-            Star(name: "Hyadum II (Delta Tauri)", id: .delta, ra: 65.7333, dec: 17.5425, lineTo: .gamma),
-            Star(name: "Hyadum I (Gamma Tauri)", id: .gamma, ra: 64.9458, dec: 15.6275, lineTo: .lambda),
-            Star(name: "Theta Taurus (Theta Taurus)", id: .theta, ra: 67.1625, dec: 15.8708, lineTo: .gamma),
-            Star(name: "Aldebaran (Alpha Tauri)", id: .alpha, ra: 68.9792, dec: 16.5092, lineTo: .theta),
-            Star(name: "Zeta Taurus", id: .zeta, ra: 84.4083, dec: 21.1425, lineTo: .alpha),
-            Star(name: "Nath (Beta Tauri)", id: .beta, ra: 81.5708, dec: 28.6072, lineTo: .epsilon),
-            Star(name: "Lambda Taurus", id: .lambda, ra: 60.1667, dec: 12.4903, lineTo: .xi),
-            Star(name: "Xi Taurus", id: .xi, ra: 51.7917, dec: 9.7325, lineTo: nil),
-            Star(name: "Alcyone (Eta Tauri)", id: .eta, ra: 56.8708, dec: 24.1050, lineTo: .delta)
-        ]
-        
-        let lines: [SCNNode] = createLinesBetweenStars(stars: stars)
         
         if let scene = scnView.scene {
-            for star in stars {
-                scene.rootNode.addChildNode(star.node)
-            }
-            
-            for line in lines {
-                scene.rootNode.addChildNode(line)
-            }
-        }
-    }
-    
-    func createLine(positionA: SCNVector3, positionB: SCNVector3) -> SCNNode {
-        let scnView = self.view as! SCNView
-        let positionA = positionA
-        let positionB = positionB
-        
-        let vector = SCNVector3(positionA.x - positionB.x, positionA.y - positionB.y, positionA.z - positionB.z)
-        let distance = sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)
-        let midPosition = SCNVector3 (x:(positionA.x + positionB.x) / 2, y:(positionA.y + positionB.y) / 2, z:(positionA.z + positionB.z) / 2)
-        
-        let lineGeometry = SCNCylinder()
-        lineGeometry.radius = 0.01
-        lineGeometry.height = CGFloat(distance)
-        lineGeometry.radialSegmentCount = 5
-        lineGeometry.firstMaterial!.diffuse.contents = UIColor.white
-        
-        let lineNode = SCNNode(geometry: lineGeometry)
-        lineNode.position = midPosition
-        
-        if let scene = scnView.scene {
-            lineNode.look (at: positionB, up: (scene.rootNode.worldUp), localFront: lineNode.worldUp)
-        }
-        
-        return lineNode
-    }
-    
-    func createLinesBetweenStars(stars: [Star]) -> [SCNNode] {
-        var lines: [SCNNode] = []
-        
-        for star in stars {
-            if let nextStarId = star.lineTo {
-                if let nextStar = stars.first(where: {$0.id == nextStarId}) {
-                    let line = createLine(positionA: star.node.position, positionB: nextStar.node.position)
-                    lines.append(line)
+            for constellation in constellations {
+                for star in constellation.stars {
+                    scene.rootNode.addChildNode(star.node)
+                }
+                
+                for line in constellation.lines {
+                    scene.rootNode.addChildNode(line)
                 }
             }
         }
-        
-        return lines
     }
-    
     
     @objc
     func handleTap(_ gestureRecognize: UIGestureRecognizer) {
